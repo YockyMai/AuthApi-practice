@@ -1,13 +1,16 @@
 {
-  "name": "authApi",
-  "version": "1.0.0",
-  "description": "auth api",
-  "main": "index.js",
-  "author": "GrigorevValeriy",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.17.3",
-    "mongoose": "^6.2.8",
-    "nodemon": "^2.0.15"
-  }
+	"name": "authapi",
+	"version": "1.0.0",
+	"description": "auth api",
+	"main": "index.js",
+	"author": "GrigorevValeriy",
+	"license": "MIT",
+	"scripts": {
+		"start": "nodemon inded.js"
+	},
+	"dependencies": {
+		"express": "^4.17.3",
+		"mongoose": "^6.2.8",
+		"nodemon": "^2.0.15"
+	}
 }
