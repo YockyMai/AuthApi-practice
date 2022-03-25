@@ -8,6 +8,9 @@ const app = express();
 
 app.use(express.json()); //Сервер парсит в JSON формат
 app.use('/auth', authRouter);
+app.use('/', (req, res) => {
+	res.json('API is ready to go :D');
+});
 
 const start = async () => {
 	try {
