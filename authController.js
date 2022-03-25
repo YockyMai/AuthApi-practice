@@ -3,12 +3,22 @@ const User = require('./models/Users');
 const Role = require('./models/Role');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
+const { secret } = require('./config');
+
+const generateAccessToken = (id, roles) => {
+	const payload = {
+		id,
+		roles,
+	};
+	return jwt.sign(payload, secret, { expiresIn: '24h' });
+	//генерирует JWT токен, первый параметр полезная информация(данные пользователя к примеру), второй - секртеный ключ, третий - длительность жизни токена
+};
 class authController {
 	async registration(req, res) {
 		try {
 			const { username, password } = req.body; // вернет то что отправил нам пользователь
 			const candidate = await User.findOne({ username }); //функция findOne возвращает значение если оно совпадает с уловием
-
 			const errors = validationResult(req); // Фнкция принимает Request чтобы проверить данные на валидность
 			if (!errors.isEmpty()) {
 				return res.status(400).json({ errors: errors.array() }); //Дрпопает ошибку если данные не прошли проверку на валидность
@@ -37,8 +47,31 @@ class authController {
 	}
 	async login(req, res) {
 		try {
-			res.json('login');
+			const { username, password } = req.body;
+			const user = await User.findOne({ username });
+
+			if (!user) {
+				return res.status(400).json({
+					message: `Пользователь с именем ${username} не найден`,
+				});
+			}
+
+			const validPassword = bcrypt.compareSync(password, user.password);
+			if (!validPassword) {
+				return res.json({
+					message: 'Неверный пароль',
+				});
+			}
+
+			const token = generateAccessToken(user._id, user.roles);
+			return res.status(400).json({
+				// username: username,
+				// password: password,
+				// message: 'Успешный вход',
+				token,
+			});
 		} catch (e) {
+			throw e;
 			console.log(e);
 		}
 	}
