@@ -9,7 +9,7 @@ router.post(
 	'/registration',
 	body('username').notEmpty(),
 	body('password').isLength({ min: 3, max: 10 }),
-	authController.registration, //TODO: насторить валидацию 18:45
+	authController.registration,
 );
 router.post('/login', authController.login);
 router.post('/users', authController.getUsers);

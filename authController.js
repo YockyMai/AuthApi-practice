@@ -25,9 +25,10 @@ class authController {
 			}
 
 			if (candidate) {
-				return res
-					.status(400)
-					.json('Такой пользователь уже существует!');
+				return res.status(400).json({
+					message: 'Такой пользователь уже существует!',
+					code: 400,
+				});
 			}
 
 			const salt = bcrypt.genSaltSync(10);
@@ -40,7 +41,10 @@ class authController {
 				roles: [userRole.value],
 			});
 			await newUser.save();
-			return res.json('Пользователь успешно зарегестрирован!');
+			return res.json({
+				message: 'Пользователь успешно зарегестрирован!',
+				code: 200,
+			});
 		} catch (e) {
 			console.log(e);
 		}
@@ -58,17 +62,16 @@ class authController {
 
 			const validPassword = bcrypt.compareSync(password, user.password);
 			if (!validPassword) {
-				return res.json({
+				return res.status(400).json({
 					message: 'Неверный пароль',
 				});
 			}
 
 			const token = generateAccessToken(user._id, user.roles);
-			return res.status(400).json({
-				// username: username,
-				// password: password,
-				// message: 'Успешный вход',
+			return res.json({
+				user,
 				token,
+				message: 'Успешный вход',
 			});
 		} catch (e) {
 			throw e;
