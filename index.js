@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authRouter = require('./authRoutes');
+const notesRoutes = require('./notesRoutes');
 const corsMiddleware = require('./middleware/cors.middleware');
 require('dotenv').config();
 const PORT = process.env.PORT || 5000;
@@ -9,7 +10,9 @@ const app = express();
 
 app.use(corsMiddleware);
 app.use(express.json()); //Сервер парсит в JSON формат
+
 app.use('/auth', authRouter);
+app.use('/notes', notesRoutes);
 app.use('/', (req, res) => {
 	res.json('API is ready to go :D');
 });
