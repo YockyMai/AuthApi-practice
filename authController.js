@@ -88,7 +88,11 @@ class authController {
 					});
 				}
 
-				const token = generateAccessToken(user._id, user.roles);
+				const token = jwt.sign(
+					{ _id: user._id },
+					process.env.SECRET_KEY,
+					{ expiresIn: '48h' },
+				);
 				return res.json({
 					user,
 					token,
@@ -109,6 +113,28 @@ class authController {
 			res.json('working');
 		} catch (e) {
 			console.log(e);
+		}
+	}
+
+	async auth(req, res) {
+		try {
+			const user = await User.findOne({ _id: req.user._id });
+
+			console.log(user);
+
+			const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, {
+				expiresIn: '48h',
+			});
+
+			console.log(token);
+
+			return res.json({
+				user,
+				token,
+				message: 'Успешный вход',
+			});
+		} catch (e) {
+			console.log(e); //TODO: Доделать авторизацию по токену
 		}
 	}
 }
